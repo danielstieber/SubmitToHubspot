@@ -1,0 +1,77 @@
+<?php
+class SubmitToHubspot extends WireData implements Module, ConfigurableModule {
+
+    static function getModuleInfo() {
+        return [
+            'title'   => 'Submits a form to Hubspot',
+            'summary' => 'Create or update contacts in your Hubspot CRM with a custom form.',
+            'version' => '0.0.1',
+            'author'  => 'danielstieber',
+            'href'    => 'https://github.com/danielstieber/SubmitToHubspot',
+            'icon'    => 'address-card',
+            'autoload'=> false,
+            'singular'=> false
+        ];
+    }
+    const SITE_ENDPOINT_BASE = "https://forms.hubspot.com/uploads/form/v2/";
+
+    public function submitForm(string $guid, array $data, string $url = "", string $title = "", $cookie = "", $ip = "") {
+        $hs_context = [
+            'hutk' => $cookie,
+            'ipAddress' => $ip,
+            'pageUrl' => $url,
+            'pageName' => $title
+        ];
+
+        $hs_context = json_encode($hs_context);
+        $api = "contacts/v1/contact/createOrUpdate/email/".$data['email'];
+        $param = "";
+        foreach ($data as $k => $v) {
+            if(!empty(trim($v))) { // avoid to override data of existing leads with empty field values
+                $param .= "&".$k."=".urlencode($v);
+            }
+        }
+        $param = substr($param,1)."&hs_context=".urlencode($hs_context);
+        
+        $http = new WireHttp();
+        $http->setHeaders(['Content-Type' => 'application/x-www-form-urlencoded']);
+        $response = $http->post(self::SITE_ENDPOINT_BASE.$this->portal_id.'/'.$guid, $param);
+        if($response !== false) {
+          return true;
+        } else {
+            $this->warning("Hubspot Form not submitted: " . $http->getError(), Notice::log); // Create warning in Processwire backend
+            return false;
+        }
+    }
+
+    public function __construct()
+    {
+        //
+    }
+    public static function getModuleConfigInputfields(array $data)
+    {
+        $wrap = new InputfieldWrapper();
+        $form = wire('modules')->get('InputfieldFieldset');
+        $form->label = __('Hubspot Configuration');
+        $form->notes = __('To get the parameter above, go to your Hubspot interface, copy your Hub-Id in the top right corner and paste it in here.');
+        $form->collapsed = Inputfield::collapsedPopulated;
+        $inputfields = [
+            'portal_id' => __('Portal / Hub ID'),
+        ];
+        foreach($inputfields as $name => $label) {
+            $f = wire('modules')->get('InputfieldText');
+            $f->attr('name', $name);
+            $f->label = $label;
+            $f->required = true;
+            $f->columnWidth = 100;
+            if(isset($data[$name]))
+                $f->attr('value', $data[$name]);
+            $form->add($f);
+        }
+        $wrap->add($form);
+
+
+        return $wrap;
+    }
+}
+?>

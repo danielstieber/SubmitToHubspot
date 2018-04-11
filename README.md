@@ -2,7 +2,7 @@
 Module for ProcessWire that submits a custom form to a Hubspot CRM Form.
 
 ## How To Install
-1. Download the [zip file](https://github.com/danielstieber/LeadToHubspot/archive/master.zip) at Github or clone directly the repo into your `site/modules`
+1. Download the [zip file](https://github.com/danielstieber/SubmitToHubspot/archive/master.zip) at Github or clone directly the repo into your `site/modules`
 2. If you dowloaded the `zip file`, extract it in your `sites/modules` directory
 3. Goto the modules admin page, click on refresh and install it.
 

@@ -56,12 +56,13 @@ else
 In case of trouble check your ProcessWire warning logs.
 
 ### Working with Date & DateTime Data
-Hubspot is very picky, when it comes to Date and DateTime fields. (Learn more here: [How should timestamps be formatted for HubSpot's APIs?](https://developers.hubspot.com/docs/faq/how-should-timestamps-be-formatted-for-hubspots-apis))
+Hubspot is very picky, when it comes to Date and DateTime fields. If you want to fill a DatePicker property (a regular date field at Hubspot), you MUST submit a timestamp of the desired day midnight in miliseconds in the timezone UTC.
 
 Example:
 ```PHP
 $data = [
  	'email' => $input->post->email,
- 	'newsletter_registration_date' => strtotime('today midnight') * 1000, // in that case, newsletter_registration_date is a Hubspot Datepicker property
+ 	'newsletter_registration_date' => strtotime('today midnight') * 1000, // in that case, newsletter_registration_date is a Hubspot Datepicker property and the server timezone is UTC
 ]
 ```
+ Learn more here: [How should timestamps be formatted for HubSpot's APIs?](https://developers.hubspot.com/docs/faq/how-should-timestamps-be-formatted-for-hubspots-apis)

@@ -37,6 +37,7 @@ $data = [
 Example usage after a form is submitted on your page:
 ```PHP
 // ... validation of form data
+$hubspot = $modules->get("SubmitToHubspot");
 $formGuid = 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxx';
 $data = [
   'email' => $input->post->email,

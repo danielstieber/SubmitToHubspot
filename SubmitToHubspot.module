@@ -43,11 +43,6 @@ class SubmitToHubspot extends WireData implements Module, ConfigurableModule {
             return false;
         }
     }
-
-    public function __construct()
-    {
-        //
-    }
     public static function getModuleConfigInputfields(array $data)
     {
         $wrap = new InputfieldWrapper();
